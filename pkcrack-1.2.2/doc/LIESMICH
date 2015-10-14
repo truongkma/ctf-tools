@@ -1,0 +1,586 @@
+0. Versionsinfo
+===============
+
+Diese Datei beschreibt die Software pkcrack (Version 1.2.2).
+Version 1.2.2 enthält gegenüber der Vorgängerversion i. W. einige
+Korrekturen und wenige Neuerungen.
+
+
+1. Haftungsausschluß
+====================
+
+Der Autor garantiert nicht, daß die Software pkcrack das tut, was Sie
+vermuten. Er garantiert ebenfalls nicht, daß die Software pkcrack sich
+so verhält, wie es in der Dokumentation (dieser Text eingeschlossen)
+beschrieben wird.
+
+DIE BENUTZUNG DIESE SOFTWARE ERFOLGT AUF EIGENE GEFAHR! Der Autor
+übernimmt keine Haftung für Schäden jeglicher Art, die direkt oder 
+indirekt durch die Verwendung dieser Software entstehen. Die Benutzung
+dieser Software ist nur erlaubt, wenn der Benutzer bereit ist, den 
+Autor von sämtlichen Ansprüchen Dritter, die sich aus der Benutzung des
+Programms direkt oder indirekt ergeben, freizuhalten.
+
+Insbesondere ist der Benutzer verpflichtet dafür Sorge zu tragen, daß durch
+pkcrack keine wichtigen Daten beschädigt werden können, z. B. durch die
+Anfertigung von Sicherungskopien.
+
+Diese Software wurde für Personen entwickelt, die eigene Dateien 
+verschlüsselt und das zugehörige Paßwort vergessen haben, oder die
+Opfer eines 'Scherzes' geworden sind. Auf jedem Fall ist die Software
+gedacht für Personen, die in irgendeinem Sinn berechtigt sind, auf
+die verschlüsselten Daten zuzugreifen. Diese Software ist nicht dazu
+gedacht, anderer Leute geistiges Eigentum zu stehlen!
+
+
+2. Copyright
+============
+
+Diese Software wurde von Peter Conrad <conrad@unix-ag.uni-kl.de>
+entwickelt. Sämtliche Rechte an der Software liegen beim Autor.
+Kommerzielle Verwendung der Software in jeglicher Form ist strikt
+verboten!
+
+Teile des Source-Codes dürfen für nicht-kommerzielle Software
+weiterverwendet werden, sofern darauf hingewiesen wird, woher und
+von wem diese Teile stammen.
+
+Die Veröffentlichung von Software, die Teile des Source-Codes 
+weiterverwendet, bedarf der ausdrücklichen Genehmigung des Autors.
+
+
+3. Worum geht es hier?
+======================
+
+Diese Software implementiert einen Algorithmus zum 'knacken' der
+PkZip-Verschlüsselung. Der Algorithmus wurde von Eli Biham und
+Paul Kocher entwickelt und ist im beiliegenden Paper (Datei "pkzip.ps.gz")
+beschrieben.
+
+Da sich bereits früh abzeichnete, daß diese Software bei vielen Leuten
+auf Interesse stoßen würde, gebe ich sie als sogenannte 'Cardware' heraus.
+Ich weiß zwar nicht, wer zuerst auf die Idee der 'Cardware' kam, aber es
+ist im Grunde ganz einfach:
+
+  Wenn Ihnen die Software gefällt, und Sie sie nutzen, schicken Sie mir eine
+  Postkarte. Am besten eine Ansichtskarte aus Ihrem Heimatort. Sie können
+  draufschreiben, was immer Sie wollen, z. B. wie sehr Ihnen die Software
+  gefällt, oder was für ein toller Kerl ich bin. Lassen Sie sich was
+  einfallen! :-)
+  Übrigens: elektronische "Postkarten" gelten nicht!
+
+Meine Postanschrift ist:
+
+    Peter Conrad
+    Am Heckenberg 1
+    56727 Mayen
+
+    Germany
+
+Bitte versuchen Sie nicht, mich telefonisch unter dieser Adresse zu
+erreichen. Ihre Karte wird zwar an mich weitergeleitet werden, nicht
+aber Ihre Anrufe. Wenn Sie Fragen haben, stellen Sie sie bitte per
+email an conrad@unix-ag.uni-kl.de.
+
+
+4. Voraussetzungen
+==================
+
+ * ANSI-kompatibler C-Compiler (z. B. gcc)
+ * ca. 33 MB (virtuellen) Speicher
+   Das Gros dieser 33 MB wird nur in den ersten paar Durchläufen der
+   Schlüsselreduktion ('key-reduction') verwendet. Die Software funktioniert
+   auch mit 16 MB RAM prächtig, vorausgesetzt, Sie haben eine genügend
+   große Auslagerungsdatei eingestellt. Sie funktioniert sogar mit noch
+   weniger Hauptspeicher, allerdings geht das sehr zu Lasten der
+   Geschwindigkeit.
+   (Als ich Mitte 1996 das Programm zum ersten Mal erfolgreich getestet
+    habe, waren 33 MB noch ziemlich viel. Heute hat jeder Billig-Anbieter
+    mehr als 32 MB als Grundausstattung seiner Rechner...)
+ * Geduld :-)
+ * PGP oder GPG (nur wenn Sie die Authentizität der Software überprüfen wollen)
+
+
+5. Kompilieren der Software
+===========================
+
+Diesen Abschnitt können Sie überspringen, wenn Sie eine der fertigen
+Versionen z. B. für DOS oder Windows vorliegen haben. Hier wird
+beispielhaft das Vorgehen unter einem Unix-ähnlichen System beschrieben.
+
+Packen Sie zunächst die Software mit dem Kommando
+"zcat pkcrack-<version>.tar.gz | tar xvf -" aus.  Dabei wird ein Verzeichnis
+"pkcrack-<version>" angelegt. Wechseln Sie in das Verzeichnis:
+"cd pkcrack-<version>".
+
+Die Quelldateien befinden sich im Unterverzeichnis "src".  Wechseln Sie
+dorthin.
+
+Nun genügt es in der Regel, "make" einzugeben, um die Programme zu erzeugen.
+Wenn Sie nicht "GNU make" verwenden, müssen Sie möglicherweise die Zeilen
+"if DJGPP ... endif" in src/Makefile entfernen.
+ 
+Die Software wurde von mir unter Linux geschrieben und getestet. Weitere
+Tests wurden unter 32-Bit-Windows (sowohl mit DJGPP 2.03 als auch mit cygwin)
+und Solaris durchgeführt.  Andere Personen haben pkcrack unter Windows und
+OS/2 mit anderen Compilern compiliert und getestet, im Verzeichnis src sind
+dazu spezielle Makefiles beigelegt.
+
+Falls Sie die Software auf andere Hardware oder Betriebssysteme portieren
+wollen, überprüfen Sie, ob folgende Datentypen existieren und den
+richtigen Wertebereich haben. Unter Umständen müssen Sie die Datei
+pkctypes.h entsprechend anpassen.
+
+byte   muss den Wertebereich [0..255] haben		(unsigned char)
+ushort muss den Wertebereich [0..65535] haben		(unsigned short)
+uword  muss den Wertebereich [0..(2^32-1)] haben	(unsigned int)
+
+Im Moment fallen mir keine weiteren Punkte ein, die beachtet werden müssen.
+Falls Sie die Software erfolgreich portieren, informieren Sie mich bitte
+per email.
+
+
+6. Benutzung
+============
+
+Seit der Version 1.2 ist pkcrack eine Art "fire & forget"-Programm. Wenn
+Sie mit Software lieber etwas herumexperimentieren möchten, sollten Sie
+die ausführlichere Anleitung weiter unten lesen. Ansonsten halten Sie
+sich an die einfache Anleitung.
+
+Zunächst ist es wichtig zu verstehen, daß diese Software einen sogenannten
+*known plaintext attack* auf eine verschlüsselte Datei anwendet. Ein
+known-plaintext-attack entschlüsselt eine Datei unter Verwendung
+der verschlüsselten Datei und einer unverschlüsselten (oder eines Teils
+einer unverschlüsselten). Beachten Sie, daß der Begriff 'plaintext' sich
+auf beliebige unverschlüsselte Daten bezieht, nicht notwendigerweise
+lesbaren Text.
+
+Wenn Sie sich fragen, warum jemand ein Paßwort suchen soll, wenn er bereits
+die unverschlüsselte Datei kennt, bedenken Sie folgende Fälle:
+
+  a) Üblicherweise enthält eine ZIP-Datei mehrere Dateien. In der Regel
+     sind all diese Dateien mit demselben Paßwort verschlüsselt. Wenn man
+     also eine der Dateien kennt, kann pkcrack das Paßwort finden und
+     die restlichen Dateien entschlüsseln.
+
+  b) Man braucht nur einen Teil der unverschlüsselten Daten (mindestens
+     13 Byte), um das Paßwort zu finden. Nun haben einige Dateitypen
+     bekannte 'Header', z. B. EXE- oder DLL-Dateien. Wenn man einen
+     hinreichend langen Header kennt, kann pkcrack das Paßwort finden
+     und die komplette Datei entschlüsseln.
+
+     Um Mißverständnisse zu vermeiden: in der Regel genügt es nicht,
+     die ersten Bytes einer verschlüsselten EXE-Datei zu kennen, da
+     die Datei meistens vor dem Verschlüsseln komprimiert wurde. Man
+     muß also die ersten Bytes der *komprimierten* Datei kennen, und
+     das ist nicht das Gleiche, wie wenn man die ersten Bytes der
+     ursprünglichen Datei komprimiert!
+
+Zurück zum Programm selbst.
+
+6.1 Einfache Anleitung
+----------------------
+
+Sie brauchen zwei Dateien:
+  a) die ZIP-Datei, die Sie entschlüsseln wollen, und
+  b) eine weitere ZIP-Datei, die wenigstens eine der Dateien der
+     verschlüsselten ZIP-Datei in unverschlüsselter Form enthält. Diese
+     muß auf genau dieselbe Art komprimiert worden sein wie die
+     verschlüsselte Datei, am besten mit der gleichen Programmversion!
+
+Geben Sie ein:
+
+  pkcrack -C <verschlüsseltes-ZIP> -c <verschlüsselte-Datei>
+          -P <unverschlüsseltes-ZIP> -p <unverschlüsselte-Datei>
+          -d <entschlüsseltes-ZIP> -a
+
+(Das alles soll in eine einzige Zeile - ich habe es der Lesbarkeit wegen
+ auf mehrere aufgeteilt. "Real computer scientists never comment their
+ code - the identifiers are so long they can't afford the disc space." :-/ )
+
+<verschlüsseltes-ZIP>    ist der Name (und Pfad) der verschlüsselten ZIP-Datei
+		         (siehe oben unter a)
+<verschlüsselte-Datei>   ist der Name (und Pfad) der Datei innerhalb der
+                         verschlüsselten ZIP-Datei, die Sie auch in
+                         unverschlüsselter Form haben
+<unverschlüsseltes-ZIP>  ist der Name (und Pfad) der ZIP-Datei, die die
+                         unverschlüsselte komprimierte Originaldatei enthält
+		         (siehe oben unter b)
+<unverschlüsselte-Datei> ist der Name (und Pfad) der Datei innerhalb der
+                         unverschlüsselten ZIP-Datei
+<entschlüsseltes-ZIP>    ist der Name (und Pfad) einer Datei, unter dem
+                         pkcrack die verschlüsselte Datei nach dem
+		         Entschlüsseln abspeichern wird
+
+Jetzt müssen Sie nur noch ein wenig warten. Je nach der Größe der
+unverschlüsselten Datei und der Schnelligkeit Ihres Rechners sollte das
+Programm nach etwa einer Stunde fertig sein. Wenn Ihre unverschlüsselte
+Datei weniger als 1000 Byte lang ist, kann es auch deutlich länger
+dauern. Wenn Sie nur das Minimum verwenden (13 Byte), wird das Programm
+mehrere Tage laufen.
+
+Wenn pkcrack fertig ist und erfolgreich war, dann finden Sie Ihre 
+unverschlüsselten Daten in der Datei <entschlüsseltes-ZIP>. Sie können
+diese ZIP-Datei mit jedem ZIP-Entpacker auspacken, z. B. pkunzip unter
+DOS, oder unzip unter UNIX.
+
+Wenn die Datei <entschlüsseltes-ZIP> nicht angelegt wurde, oder wenn
+beim Entpacken der Datei CRC-Fehler gemeldet werden, können verschiedene
+Ursachen vorliegen:
+
+ * Möglicherweise haben Sie die falsche Datei als <unverschlüsselte-Datei>
+   verwendet. Versuchen Sie's nochmal mit einer anderen Datei.
+ * Möglicherweise haben Sie zwar die richtige <unverschlüsselte-Datei>,
+   sie aber nicht mit genau derselben Methode komprimiert wie die
+   verschlüsselte. Komprimieren Sie die Datei mit anderen Optionen oder
+   mit einem anderen Programm, und versuchen Sie's nochmal.
+ * Möglicherweise hat pkcrack mehr als ein passendes Paßwort gefunden und
+   hat zum Entschlüsseln das falsche verwendet. Sehen Sie sich die
+   Ausgaben von pkcrack nochmal genau an, und verwenden Sie das
+   Programm "zipdecrypt", um mit einem Satz key0, key1, key2-Werte die
+   verschlüsselte Datei zu entschlüsseln.
+ * Möglicherweise ist etwas anderes schiefgegangen. Das heißt, Sie haben
+   ein Problem. Lesen Sie die ausführlichere Anleitung unten, und versuchen
+   Sie zu verstehen, warum das Programm nicht funktioniert hat. Werfen Sie
+   auch einen Blick in die FAQ am Ende dieses Textes.
+
+6.2 Ausführlichere Anleitung
+----------------------------
+
+Dieser Abschnitt erläutert einige Sonderfunktionen von pkcrack, sowie
+die übrigen Programme dieses Softwarepakets.
+
+Genau wie bei der einfachen Anleitung oben benötigt man zwei Dateien.
+Allerdings nicht unbedingt zwei ZIP-Dateien. Man kann pkcrack mit
+zwei Dateien aufrufen, die ausschließlich Nutzdaten enthalten, also
+keine der üblichen Information in ZIP-Dateien wie z. B. Dateinamen und
+Prüfsummen. Dazu läßt man beim Aufruf von pkcrack einfach die Optionen
+-C bzw. -P weg.
+
+Demnach gibt es zwei Arten, pkcrack mitzuteilen, wo die verschlüsselten
+Daten zu finden sind:
+
+ * -C <verschlüsseltes-ZIP> -c <verschlüsselte-Datei> (siehe oben), oder
+ * -c <verschlüsselte-Datei>
+
+Im letztgenannten Fall ist <verschlüsselte-Datei> der Name (und Pfad)
+einer Datei, die *ausschließlich* verschlüsselte Daten enthält.
+
+Analog dazu gibt es zwei Arten, beim Aufruf von pkcrack die unverschlüsselte 
+Datei anzugeben:
+
+ * -P <unverschlüsseltes-ZIP> -p <unverschlüsselte-Datei> (siehe oben), oder
+ * -p <unverschlüsselte-Datei>
+
+Im letztgenannten Fall ist <unverschlüsselte-Datei> der Name (und Pfad)
+einer Datei, die *ausschließlich* unverschlüsselte Daten enthält.
+
+Beachten Sie dabei, daß PkZip vor der eigentlichen Verschlüsselung den
+komprimierten Daten zwölf zufällig gewählte Bytes voranstellt, d. h.
+die <verschlüsselte-Datei> muß zwölf Byte länger sein als die
+<unverschlüsselte-Datei>. Wenn man nur einen Teil der unverschlüsselten
+Daten kennt, kann die <unverschlüsselte-Datei> auch noch kürzer sein.
+Normalerweise deutet ein größerer oder kleinerer Unterschied der 
+Dateigrößen allerdings darauf hin, daß entweder die Dateien nicht
+übereinstimmen, oder daß sie mit unterschiedlichen Programmen oder
+unterschiedlichen Kompressionsmethoden komprimiert wurden. In diesen
+Fällen kann pkcrack kein Paßwort finden.
+
+Zum extrahieren komprimierter und/oder verschlüsselter Daten aus
+einer ZIP-Datei kann man das Programm extract verwenden, das ebenfalls
+Teil dieses Softwarepakets ist. Man ruft es wie folgt auf:
+
+  extract <ZIP-Name> <Name-im-ZIP>
+
+Damit extrahiert man die (möglicherweise verschlüsselten und/oder
+komprimierten) Daten, die in der ZIP-Datei <ZIP-Name> unter dem Namen
+<Name-im-ZIP> enthalten sind, und schreibt diese Daten unter dem Namen
+<Name-im-ZIP> ins aktuelle Verzeichnis. Wenn <Name-im-ZIP> auch
+Pfadkomponenten enthält, müssen im aktuellen Verzeichnis die entsprechenden
+Unterverzeichnisse bereits existieren.
+
+Eine weitere Option, die bereits in der einfachen Anleitung verwendet
+wurde, ist die Option -d <entschlüsseltes-ZIP>. Damit veranlaßt man pkcrack,
+die verschlüsselte ZIP-Datei zu entschlüsseln und unter dem Namen
+<entschlüsseltes-ZIP> abzuspeichern. Logischerweise kann man die Option
+-d nur dann verwenden, wenn die verschlüsselte Datei mit der Option
+-C <verschlüsseltes-ZIP> angegeben wurde.
+
+Wenn Sie die Option -d <entschlüsseltes-ZIP> nicht verwenden, wird pkcrack
+versuchen ein Paßwort zu finden, mit dem die verschlüsselten Daten
+entschlüsselt werden können. Das kann unter Umständen sehr lange dauern,
+wenn das ursprünglich gewählte Paßwort länger als zehn Zeichen war.
+Zum Entschlüsseln genügen allerdings schon die Werte key0, key1 und key2.
+Mit diesen kann man das Programm zipdecrypt aufrufen, das eine
+verschlüsselte ZIP-Datei mit diesen Werten entschlüsselt:
+
+  zipdecrypt <key0> <key1> <key2> <verschlüsseltes-ZIP> <entschlüsseltes-ZIP>
+
+<key0>, <key1> und <key2> müssen die Zahlen sein, die pkcrack ausgegeben 
+hat, <verschlüsseltes-ZIP> ist der Name der zu entschlüsselnden ZIP-Datei
+und <entschlüsseltes-ZIP> ist der Name, unter dem die entschlüsselte
+ZIP-Datei gespeichert werden soll (wie bei der pkcrack-Option -d).
+
+Nun bleibt noch eine Option zu erklären: mit -o <anfang> können Sie angeben,
+bei welchem Byte innerhalb der verschlüsselten Datei die unverschlüsselte
+beginnt. Diese Option wird dann verwendet, wenn Sie nur einen Teil
+der verschlüsselten Daten kennen, und dieser Teil mitten in der Datei liegt
+statt ganz am Anfang. Wenn Sie die Option nicht angeben, startet pkcrack
+bei Position 0. Die zwölf zufälligen Bytes am Anfang der verschlüsselten
+Datei werden also nicht mitgezählt.
+
+Es gibt noch eine weitere Verwendung der Option -o. Die sogennanten
+"zufälligen" zwölf Bytes am Anfang der Datei sind nicht so zufällig
+wie man glaubt. Manche ältere Versionen von pkzip haben zwei Bytes der
+CRC-Prüfsumme als "Zufallsbytes" verwendet. Etwas neuere Versionen nutzten
+nur noch ein Byte der Prüfsumme. Wenn die verschlüsselte Datei also mit einer
+sehr alten Version von pkzip verschlüsselt wurde, und Sie nur wenige
+Bytes am Anfang der Datei kennen, können Sie also ein oder alle CRC-Byte(s)
+vor den Anfang der Datei hängen und pkcrack mit einem negativen Anfangswert
+starten (z. B. -1 wenn Sie das letzte der zwölf Zufallsbytes kennen).
+Die Option wurde übrigens nicht sehr intensiv getestet, also verlassen
+Sie sich nicht darauf...
+
+Schließlich will ich noch ein paar Worte zum Programm "findkey" und seinem
+Gegenstück "makekey" verlieren.  "findkey" versucht, zu einem Satz
+Schlüsselwerte (key0, key1, key2) ein Paßwort zu finden. pkcrack macht
+genau das Gleiche, wenn sie nicht die verschlüsselte Datei mit der
+Option -d entschlüsseln lassen. "findkey" gibt regelmäßig aus, wie weit
+die Suche fortgeschritten ist. Sie können diese Ausgaben dazu verwenden,
+findkey später an einer bestimmten Stelle weitersuchen zu lassen. Die
+Ausgaben haben das Format
+
+  10: xx, oder
+  11: xxxx, oder
+  12: xxxxxx usw.
+
+Wenn Sie findkey an einer bestimmten Stelle weitersuchen lassen wollen,
+geben Sie ein:
+
+  findkey <key0> <key1> <key2> <laenge> <startwert>
+
+wobei <key0>, <key1>, <key2> die von pkcrack ermittelten Schlüsselwerte sind,
+<laenge> 10 oder 11 oder 12 (je nachdem, wo Sie weitermachen wollen), und
+<startwert> der Wert "xx" ist, den findkey oder pkcrack zuletzt ausgegeben
+hat. Die Parameter <laenge> und <startwert> können Sie auch weglassen, dann
+fängt findkey wieder von vorne an.
+
+Bedenken Sie, daß findkey unter Umständen *sehr* lange braucht, um ein
+Paßwort zu finden. Wenn es ein Paßwort mit weniger als zehn Zeichen gibt,
+geht es recht schnell. Aber es gibt 255 mal soviele Paßwörter der Länge
+elf wie es solche der Länge zehn gibt. In der Regel sollte man sich also
+damit zufriedengeben, die verschlüsselte Datei mit dem Programm "zipdecrypt"
+zu entschlüsseln.
+
+Mit dem Programm makekey können Sie die zu einem bekannten Paßwort passenden
+Werte key0, key1 und key2 berechnen lassen. Sie werden makekey nicht
+brauchen, wenn Sie eine Datei entschlüsseln wollen. Es kann aber ein
+interessantes Tool sein, wenn Sie ein wenig mit verschlüsselten ZIP-Dateien
+herumexperimentieren wollen.
+
+
+7. Ein paar technische Details
+==============================
+
+Dieser Abschnitt enthält kurze Beschreibungen der einzelnen Quelldateien.
+
+crc.c
+Diese Datei enthält Funktionen zur Berechnung von CRC-32 Prüfsummen. Das
+zugehörige CRC-Polynom ist in crc.h festgelegt. Um die Performance zu
+verbessern benutzen die Funktionen Tabellen, die allerdings vorher 
+erstellt werden müssen.
+
+crc.h
+Headerdatei für crc.c
+Diese Datei enthält Makros zur Berechnung von CRC-32 Prüfsummen mit Hilfe
+einer Tabelle, die vorher über eine Funktion in crc.c erstellt werden muß.
+
+debug.c
+debug.h
+Diese beiden Dateien enthalten einige Funktionen, die beim Debuggen der
+"Stage1" und "Stage2"-Funktionen helfen sollen. Dazu ist es erforderlich,
+die verwendeten Schlüssel zu kennen. Die Funktionen können dann alle
+Zwischenwerte, die auftauchen sollten, kontrollieren.
+Normalerweise sind diese Debugging-Funktionen deaktiviert.
+
+exfunc.c
+Diese Datei enthält eine Funktion, die Daten aus einer ZIP-Datei in den
+Hauptspeicher einliest.
+
+extract.c
+Diese Datei enthält die main()-Funktion des Programms "extract", mit dem
+man Daten aus einer ZIP-Datei auslesen und in einer anderen Datei abspeichern
+kann.
+
+findkey.c
+Dieses Programm versucht ein PkZip-Paßwort zu finden, das zu gegebenen
+Werten key0, key1 und key2 paßt. Es gibt während des Ablaufs Informationen
+zum Fortgang der Suche aus, mit denen später an einer bestimmten Stelle
+weitergesucht werden kann.
+
+headers.h
+Diese Headerdatei enthält Deklarationen einiger Datenstrukturen, die in
+ZIP-Dateien vorkommen.
+
+keystuff.c
+Diese Datei enthält Funktionen zur Initialisierung und Aktualisierung des
+internen Zustands des Verschlüsselungsalgorithmus'.
+
+keystuff.h
+Dies ist eine Headerdatei für keystuff.c
+
+main.c
+Diese Datei enthält die main()-Funktion von pkcrack. Sie liest
+die verschlüsselten und unverschlüsselten Dateien ein und ruft
+anschließend die verschiedenen Teile des Algorithmus' auf.
+
+mktmptbl.c
+Diese Datei enthält eine Funktion, die eine Tabelle erstellt, über die
+die "temp"-Werte zu einem gegebenen "key3" schnell ermittelt werden können.
+(Wenn Sie wissen wollen, was "temp" und "key3" bedeutet, lesen Sie das
+ beiliegende Paper zum Algorithmus.)
+
+mktmptbl.h
+Dies ist eine Headerdatei für mktmptbl.c
+
+pkcrack.h
+Diese Headerdatei enthält einige globale Konstanten und Variablen, die im
+Programm verwendet werden.
+
+pkctypes.h
+Diese Datei enthält Typdefinitionen für byte, ushort und uword. Wenn Sie
+die Software auf andere Hardware oder Betriebssysteme portieren wollen,
+müssen Sie diese Datei möglicherweise anpassen.
+
+readhead.c
+Diese Datei enthält einige Funktionen, mit denen Header in einer ZIP-Datei
+gelesen und ausgewertet werden können. Lesen Sie die Datei "appnote.iz.txt",
+wenn Sie genaueres wissen wollen.
+
+stage1.c
+Diese Datei implementiert die erste Stufe des Algorithmus'. Dort werden
+Anfangswerte für key2 gesucht. Anschließend wird versucht, die Anzahl
+der möglichen Werte zu verringern. Diese Stufe wird im Paper in den
+Abschnitten 3.1 und 3.2 beschrieben.
+
+stage1.h
+Dies ist eine Headerdatei für stage1.c
+
+stage2.c
+Diese Datei implementiert die zweite Stufe des Algorithmus', in der aus
+einer Liste von key2-Werten passende key1- und key0-Werte ermittelt werden.
+Wenn das gelingt, wird noch ein Plausibilitätstest gemacht und ggfs.
+eine Erfolgsmeldung ausgegeben. Eine genaue Beschreibung finden Sie in
+den Abschnitten 3.3, 3.4 und 3.5 des Papers.
+
+stage2.h
+Dies ist eine Headerdatei für stage2.c
+
+stage3.c
+Diese Datei implementiert die dritte Stufe des Algorithmus', in der 
+versucht wird, zu gegebenen key0-, key1- und key2-Werten ein Paßwort
+zu finden. Die Suche ist in Abschnitt 3.6 des Papers beschrieben.
+
+stage3.h
+Dies ist eine Headerdatei für stage3.c
+
+writehead.c
+Diese Datei ist das Gegenstück zu readhead.c - sie enthält Funktionen,
+um Datenstrukturen in ZIP-Dateien zu schreiben.
+
+zdmain.c
+Diese Datei enthält die main()-Funktion des Programms zipdecrypt.
+
+zipdecrypt.c 
+Diese Datei enthält eine Funktion, um eine ZIP-Datei mit Hilfe gegebener
+key0-, key1- und key2-Werte zu entschlüsseln. Sie erzeugt wiederum eine
+ZIP-Datei, die allerdings unverschlüsselt ist und mit beliebigen
+ZIP-Programmen geöffnet werden kann.
+Diese Funktion wurde eingeführt, weil es sehr lange dauern kann, ein
+Paßwort zu finden.
+
+Wenn Sie weitere Informationen zum Algorithmus wünschen, lesen Sie das
+beiliegende Paper (pkzip.ps.gz). Die Datei appnote.iz.txt enthält eine
+Beschreibung der Struktur von ZIP-Dateien. Beachten Sie außerdem den
+Abschnitt "Weitere Informationen" weiter unten.
+
+Das wär's. Manche der weniger durchsichtigen Abschnitte der Quelldateien
+sind kommentiert. Die meisten Abschnitte sind es allerdings nicht.
+
+
+8. Tips & Tricks
+================
+
+Jemand, der nicht genannt werden möchte, schrieb mir per email:
+> I had asked Dimitri for the source to the Win32 version
+> of PkCrack because I wanted to change it to allow it
+> to scan an encrypted PKSFX-style self-extracting
+> Zip file.
+> 
+> However, after a while, I figured out
+> that you can use PkZipFix to convert a Zip .EXE to
+> a regular .Zip, which will work with PkCrack.
+> PkCrack didn't recognize the .EXE file.
+
+(D. h. wenn Sie eine selbstentpackende ZIP-Datei entschlüsseln möchten,
+ dann wandeln Sie sie zunächst mit dem Programm pkzipfix in eine normale
+ ZIP-Datei um, und benutzen Sie dann pkcrack zum entschlüsseln dieser
+ Datei.)
+
+PkZIPFix ist ein Programm von PkWare, Inc. und nicht Teil dieser Software.
+ 
+
+9. FAQ / Häufig gestellte Fragen
+================================
+
+F: "Soll ich eine komprimierte oder eine unkomprimierte Originaldatei
+    verwenden?"
+A: Sie müssen die unverschlüsselte Datei mit *genau demselben* Programm und
+   genau denselben Einstellungen komprimieren, mit denen die verschlüsselte
+   Datei erstellt wurde. Wenn also die verschlüsselte Datei unkomprimiert
+   ist, benutzen Sie die unkomprimierte Originaldatei. Wenn die verschlüsselte
+   Datei mit der Kompressionseinstellung 'best' komprimiert wurde, dann
+   müssen Sie auch die unveschlüsselte Datei mit der Einstellung 'best'
+   komprimieren.
+   Einen Fingerzeig, ob Sie die richtige Einstellung gewählt haben, liefert
+   Ihnen ein Vergleich der Dateigrößen: die verschlüsselte Datei innerhalb
+   der ZIP-Datei muß zwölf Byte länger sein als die unverschlüsselte.
+   (Vorsicht, manche Programme ziehen diese zwölf Byte bei der Anzeige
+    der Dateilänge automatisch ab. In dem Fall müssen die Dateigrößen
+    übereinstimmen.)
+   Wegen kleiner Unterschiede bei den Kompressionsverfahren ist es
+   wichtig, daß Sie zum Komprimieren der unverschlüsselten Datei dieselbe
+   Programmversion verwenden, mit der die verschlüsselte Datei komprimiert
+   wurde!
+
+F: "Da steht, daß vor den verschlüsselten Daten zwölf Zufallsbytes in
+    der Datei enthalten sind. Muß die verschlüsselte Datei, mit der ich
+    pkcrack aufrufe, diese zwölf Bytes enthalten?
+A: Ja.
+
+F: "Aber wo soll ich den die Originalversion dieser Zufallsbytes hernehmen?"
+A: Gar nicht. Benutzen Sie einfach die Originaldatei ohne irgendetwas
+   vorne anzuhängen.
+
+F: "Hallo, können Sie mir die Datei entschlüsseln, die ich unten angehängt
+    habe?"
+    [Gefolgt von ein paar Megabyte verschlüsselten Datenmülls]
+A: BITTE SCHICKEN SIE MIT KEINE DATEIEN, ES SEI DENN ICH BITTE AUSDRÜCKLICH
+   DARUM. Danke.
+
+10. Weitere Informationen
+=========================
+
+Original-Spezifikation des ZIP-Dateiformats von PKWare:
+http://www.pkware.com/products/white_papers/white_appnote.html
+
+Modifizierte Version von InfoZIP:
+ftp://ftp.info-zip.org/pub/infozip/doc/appnote-011203-iz.zip
+
+Einige Untersuchungen von Paul Kocher:
+http://www.bokler.com/zipcrack.txt
+
+Eine verbesserte Variante des ursprünglichen Angriffs:
+http://www.woodmann.com/fravia/mike_zipattacks.htm
+

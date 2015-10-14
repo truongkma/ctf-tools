@@ -1,0 +1,12 @@
+This are my solutions to the Matasano crypto challenges
+(http://cryptopals.com) in Python 3.
+
+For most challenges it suffices to run:
+
+python3 challengeXX.py
+
+but for some challenges, you might need to do:
+
+python3 challengeXX_server.py
+
+or similar first.

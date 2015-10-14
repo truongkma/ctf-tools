@@ -1,0 +1,14 @@
+List of known bugs in Pkcrack-1.2.2
+===================================
+
+ - pkcrack does not support the complete ZIP file format as specified in
+   appnote.txt.
+ - pkcrack reports fairly often to have found false hits. While this is not
+   necessarily a bug, it's a behaviour I didn't expect.
+ - The documentation seems to (still) be unclear on some points. Sigh.
+
+ - For some reason(s) the test suite doesn't run under Solaris. Probably
+   requires GNU make, mktemp etc.
+ - src/Makefile also requires GNU make. It will work with /usr/ccs/bin/make
+   on Solaris if you remove the "if DJGPP...endif" lines.
+

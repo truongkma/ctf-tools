@@ -1,0 +1,107 @@
+	Defining an external mode.
+
+To define an external cracking mode you need to create a configuration
+file section called [List.External:MODE], where MODE is any name that
+you assign to the mode.  The section should contain some functions
+programmed in a subset of the C language.  John will compile and use the
+functions if you enable this cracking mode via the command line.
+
+
+	External functions.
+
+The following functions are currently used by John:
+
+init()		called at startup, should initialize global variables
+filter()	called for each word to be tried, can filter some words out
+generate()	called to generate words, when no other cracking modes used
+restore()	called when restoring an interrupted session
+
+All of them are of type "void", with no arguments, and should use the
+global variable "word" (pre-defined as "int word[]"), except for init()
+which is called before "word" is initialized.  The variable "word"
+contains the current candidate password to be tried, one character in
+each array element, terminated with a zero.
+
+The functions, if defined, should do the following with "word":
+
+* filter() can modify the word, or zero out "word[0]" to skip it;
+
+* generate() should set "word" to the next word to be tried, or zero out
+"word[0]" when cracking is complete (this will cause John to terminate);
+
+* restore() should set global variables to continue from the "word". If
+there are no global variables needing restoring, an empty stub function
+should be provided, or John will refuse to resume a session.
+
+You can use an external mode on its own or with some other cracking
+mode, in which case only init() and filter() will be used (and only
+filter() will be required).  Using an external filter is compatible with
+all the other cracking modes and with the "--make-charset" command line
+option.
+
+It is recommended that you don't use filter() or at least don't filter
+too many words out when using an external mode with your own generate().
+It is better to modify generate() not to generate words that would get
+filtered out.
+
+
+	Pre-defined variables.
+
+Besides the "word" variable documented above, John the Ripper 1.7.9 and
+newer pre-defines two additional variables: "abort" and "status", both
+of type "int".  When set to 1 by an external mode, these cause the
+current cracking session to be aborted or the status line to be
+displayed (just like on a keypress), respectively.  These actions are
+taken after having tested at least all of the candidate passwords that
+were in external mode's "word" so far.  In other words, the actions may
+be delayed in order to process any buffered candidate passwords.
+
+From 1.7.9.5-jumbo-7 on, a third variable is defined: "cipher_limit".
+This variable is of type "int". It contains the maximum password length
+in bytes, either from the format definition or from --stdout[=LENGTH].
+This variable should not be changed by the external mode.
+Instead, it can be used to stop generating new candidates should the
+password length get larger than "cipher_limit".
+
+From 1.7.9-Jumbo-8 on, two new variables "req_minlen" (requested min.
+length), "req_maxlen" (requested max. length) were added, reflecting
+the --min-len=N and --max-len=N options. Also, a variable "session_start_time"
+was added that is equivalent of time(NULL) at start, ie. the current time
+expressed in seconds after Jan 1 1970. This variable is initialized once,
+not updated. Note: On a resume you will end up using a new value than was
+originally used.
+
+
+	The language.
+
+As it has been mentioned above, the compiler supports a subset of C.
+The supported keywords are: void, int, if, else, while, continue, break,
+and return.
+
+You can define functions to be called by John (the ones described
+above), define global and local variables (including single dimensional
+arrays), use all the integer operations supported in C, and use C and
+C++ comments.
+
+The following C features are missing from John's compiler:
+
+* function calls (any functions defined as a part of an external mode
+can only be called by John core, but not from within other external mode
+functions);
+
+* only "while" loops are supported;
+
+* only "int" and "void" data types are supported;
+
+* only single dimensional arrays are supported;
+
+* structs/unions are not supported;
+
+* pointers are not supported (array name refers to the first element);
+
+* probably something else...
+
+You can find some external mode examples in the default configuration
+file supplied with John.
+
+$Owl$

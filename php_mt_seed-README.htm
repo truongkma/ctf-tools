@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>php_mt_seed: README</title>
+<link href="php_mt_seed%20%20README_files/style.css" type="text/css" rel="stylesheet">
+<meta name="keywords" content="php_mt_seed, mt_rand, seed, cracker, PHP">
+<link media="all" href="php_mt_seed%20%20README_files/widget005.css" type="text/css" rel="stylesheet"></head>
+
+<body alink="red" bgcolor="#E0E0E0" link="blue" text="black" vlink="navy">
+
+
+<table bgcolor="#ffffff" border="0" width="100%" cellpadding="0" cellspacing="0">
+<tbody><tr>
+
+<td>
+<a href="http://www.openwall.com/"><img class="logo" src="php_mt_seed%20%20README_files/logo.png" alt="Openwall" border="0" height="80" width="182"></a>
+</td><td width="100%">
+<div class="nav">
+<ul>
+<li><a href="http://www.openwall.com/">Products</a>
+<ul>
+<li><a href="http://www.openwall.com/Owl/">Openwall GNU/*/Linux &nbsp; <i>server OS</i></a>
+</li><li><a href="http://www.openwall.com/john/">John the Ripper &nbsp; <i>password cracker</i></a>
+<ul>
+<li><a href="http://www.openwall.com/john/">Free &amp; Open Source for any platform</a>
+</li><li><a href="http://www.openwall.com/john/pro/linux/">Pro for Linux (RPM package)</a>
+</li><li><a href="http://www.openwall.com/john/pro/macosx/">Pro for Mac OS X (dmg package)</a>
+</li></ul>
+</li><li><a href="http://www.openwall.com/wordlists/">Wordlists &nbsp; <i>for password cracking</i></a>
+</li><li><a href="http://www.openwall.com/passwdqc/">passwdqc &nbsp; <i>policy enforcement</i></a>
+</li><li><a href="http://www.openwall.com/phpass/">phpass &nbsp; <i>password hashing in PHP</i></a>
+</li><li><a href="http://www.openwall.com/crypt/">crypt_blowfish &nbsp; <i>ditto in C/C++</i></a>
+</li><li><a href="http://www.openwall.com/tcb/">tcb &nbsp; <i>better password shadowing</i></a>
+</li><li><a href="http://www.openwall.com/pam/">Pluggable Authentication Modules</a>
+</li><li><a href="http://www.openwall.com/scanlogd/">scanlogd &nbsp; <i>port scan detector</i></a>
+</li><li><a href="http://www.openwall.com/popa3d/">popa3d &nbsp; <i>tiny POP3 daemon</i></a>
+</li><li><a href="http://www.openwall.com/blists/">blists &nbsp; <i>web interface to mailing lists</i></a>
+</li><li><a href="http://www.openwall.com/msulogin/">msulogin &nbsp; <i>single user mode login</i></a>
+</li><li><a href="http://www.openwall.com/php_mt_seed/">php_mt_seed &nbsp; <i>mt_rand() cracker</i></a>
+</li></ul>
+</li><li><a href="http://www.openwall.com/services/">Services</a>
+</li><li id="narrow-li-1"><a>Publications</a>
+<ul>
+<li><a href="http://www.openwall.com/articles/">Articles</a>
+</li><li><a href="http://www.openwall.com/presentations/">Presentations</a>
+</li></ul>
+</li><li id="narrow-li-2"><a href="http://www.openwall.com/community/">Community</a>
+<ul>
+<li><a href="http://www.openwall.com/lists/">Mailing lists</a>
+</li><li><a href="http://openwall.info/wiki/">Community wiki</a>
+</li><li><a href="http://www.openwall.com/donations/">Donations</a>
+</li></ul>
+</li><li><a>Resources</a>
+<ul>
+<li><a href="http://cvsweb.openwall.com/">Source code repository (CVSweb)</a>
+</li><li><a href="http://www.openwall.com/mirrors/">File archive &amp; mirrors</a>
+</li><li><a href="http://www.openwall.com/signatures/">How to verify digital signatures</a>
+</li><li><a href="http://www.openwall.com/passwords/">Password recovery resources</a>
+</li><li><a href="http://www.openwall.com/books/">Recommended books</a>
+</li></ul>
+</li><li id="last-li"><a href="http://www.openwall.com/news">What's new</a>
+</li></ul>
+</div>
+
+
+</td></tr></tbody></table>
+
+<table bgcolor="#B4D0DC" border="0" width="100%" cellpadding="1" cellspacing="0">
+<tbody><tr><td>
+<table border="0" width="100%" cellpadding="2" cellspacing="0">
+<tbody><tr><td bgcolor="#ECF8FF">
+
+<noscript>
+<A HREF="/cgi/redirect.cgi?elcomsoft-awpr">
+Advanced Windows Password Recovery</A>
+
+</noscript>
+<script src="php_mt_seed%20%20README_files/ca-pub-5740179960436419.js" type="text/javascript" async=""></script><script type="text/javascript"><!--
+google_ad_client = "pub-5740179960436419";
+google_alternate_ad_url = "http://www.openwall.com/alt.shtml";
+google_ad_width = 728;
+google_ad_height = 18;
+google_ad_format = "728x15_0ads_al_s";
+google_ad_channel ="0441120629";
+google_color_border = "B4D0DC";
+google_color_bg = "ECF8FF";
+google_color_link = "0000CC";
+google_color_url = "008000";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript" src="php_mt_seed%20%20README_files/show_ads.js">
+</script><ins id="aswift_0_expand" style="display:inline-table;border:none;height:18px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:18px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;" height="18" width="728" frameborder="0"></iframe></ins></ins>
+
+
+</td><td align="right" bgcolor="#ECF8FF" width="130">
+<a rel="nofollow" class="addthis_button" href="http://addthis.com/bookmark.php?v=250&amp;username=openwall"><img src="php_mt_seed%20%20README_files/lg-share-en.gif" alt="Bookmark and Share" border="0" height="16" width="125"></a>
+
+
+</td></tr></tbody></table>
+</td></tr></tbody></table>
+
+<p>
+This is a PHP mt_rand() seed cracker. In the most trivial invocation
+mode, it finds possible seeds given the very first mt_rand() output
+after possible seeding with mt_srand(). With advanced invocation modes,
+it is also able to match multiple, non-first, and/or inexact mt_rand()
+outputs to possible seed values.
+</p><p>
+Here's a sample run. First, generate a sample "random" number (using
+PHP 5.3.x in this case):
+</p><pre>$ php5 -r 'mt_srand(1234567890); echo mt_rand(), "\n";'
+1328851649
+</pre>
+<p>
+Now build and run the cracker:
+</p><pre>$ make
+gcc -Wall -march=native -O2 -fomit-frame-pointer -funroll-loops -fopenmp php_mt_seed.c -o php_mt_seed
+$ time ./php_mt_seed 1328851649
+Found 0, trying 637534208 - 671088639, speed 64855972 seeds per second
+seed = 658126103
+Found 1, trying 1207959552 - 1241513983, speed 64874304 seeds per second
+seed = 1234567890
+Found 2, trying 4261412864 - 4294967295, speed 64861687 seeds per second
+Found 2
+
+real  1m6.218s
+user  8m49.165s
+sys   0m0.020s
+</pre>
+<p>
+In one minute of real time on an FX-8120 CPU, using AMD XOP's vectorized
+fused multiply-add instructions, it found the original seed, another
+seed that also produces the same mt_rand() output, and it searched the
+rest of the 32-bit seed space (not finding other matches).
+</p><p>
+Intel AVX2 (no integer fused multiply-add, but 256- rather than 128-bit
+vectors) provides a slightly higher speed, on a Core i7-4770K CPU:
+</p><pre>$ time ./php_mt_seed 1328851649
+Found 0, trying 637534208 - 671088639, speed 89667258 seeds per second
+seed = 658126103
+Found 1, trying 1207959552 - 1241513983, speed 89811119 seeds per second
+seed = 1234567890
+Found 2, trying 4261412864 - 4294967295, speed 89808490 seeds per second
+Found 2
+
+real  0m47.826s
+user  6m19.100s
+sys   0m0.008s
+</pre>
+<p>
+Testing on a bigger machine (two E5-2670 CPUs, using 128-bit AVX):
+</p><pre>$ OMP_NUM_THREADS=16 time ./php_mt_seed 1328851649
+Found 0, trying 637534208 - 671088639, speed 237885898 seeds per second
+seed = 658126103
+Found 1, trying 1207959552 - 1241513983, speed 238256321 seeds per second
+seed = 1234567890
+Found 2, trying 4261412864 - 4294967295, speed 238200830 seeds per second
+Found 2
+287.87user 0.00system 0:18.03elapsed 1596%CPU (0avgtext+0avgdata 3296maxresident)k
+</pre>
+<p>
+Somehow 32 threads (to match the logical CPU count) results in a lower
+speed with this specific build on this specific machine; YMMV.
+</p><p>
+Matching of multiple outputs, including inexact:
+</p><pre>$ php5 -r 'mt_srand(1234567890); for ($i = 0; $i &lt; 10; $i++) { echo mt_rand(0, 9), " "; } echo "\n";'
+6 6 4 1 1 2 8 4 5 8
+</pre>
+<p>
+On the same machine as above:
+</p><pre>$ OMP_NUM_THREADS=16 time ./php_mt_seed 6 6 0 9  6 6 0 9  4 4 0 9  1 1 0 9  1 1 0 9  2 2 0 9  7 8 0 9  4 4 0 9  0 0 0 0  8 8 0 9
+Pattern: EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 RANGE-FROM-10 EXACT-FROM-10 SKIP EXACT-FROM-10
+Found 0, trying 1207959552 - 1241513983, speed 205435297 seeds per second
+seed = 1234567890
+Found 1, trying 1409286144 - 1442840575, speed 205435297 seeds per second
+seed = 1414163717
+Found 2, trying 1879048192 - 1912602623, speed 205585141 seeds per second
+seed = 1893625793
+Found 3, trying 2785017856 - 2818572287, speed 205536373 seeds per second
+seed = 2804485451
+Found 4, trying 3791650816 - 3825205247, speed 205509529 seeds per second
+seed = 3810276440
+Found 5, trying 4261412864 - 4294967295, speed 205567431 seeds per second
+Found 5
+333.60user 0.00system 0:20.90elapsed 1596%CPU (0avgtext+0avgdata 3472maxresident)k
+</pre>
+<p>
+Notice how "7 8 0 9" specifies a range of possible values (7 to 8), and
+"0 0 0 0" means to skip (ignore) this one mt_rand() output value. In
+our case, this uncertainty results in several additional possible seeds
+being found.
+</p><p>
+To build php_mt_seed for Xeon Phi, install Intel's C compiler and run
+"make mic". To run php_mt_seed on Xeon Phi, copy Intel C compiler's
+OpenMP runtime library (such as libiomp5.so) to the Xeon Phi card, e.g.
+using scp. Then SSH in to the card and run a command like:
+</p><pre>$ LD_LIBRARY_PATH=. time ./php_mt_seed 1328851649
+Found 0, trying 536870912 - 805306367, speed 440058124 seeds per second
+seed = 658126103
+Found 1, trying 1073741824 - 1342177279, speed 511305630 seeds per second
+seed = 1234567890
+Found 2, trying 4026531840 - 4294967295, speed 579357099 seeds per second
+Found 2
+real  0m 7.60s
+user  28m 45.01s
+sys   0m 3.78s
+</pre>
+<p>
+This is on a Xeon Phi 5110P, running 240 threads (as it should).
+</p><p>
+Advanced invocation modes work too, but the performance impact of the
+non-vectorized portions of code is higher than on regular CPUs:
+</p><pre>$ LD_LIBRARY_PATH=. time ./php_mt_seed 6 6 0 9  6 6 0 9  4 4 0 9  1 1 0 9  1 1 0 9  2 2 0 9  7 8 0 9  4 4 0 9  0 0 0 0  8 8 0 9
+Pattern: EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 EXACT-FROM-10 RANGE-FROM-10 EXACT-FROM-10 SKIP EXACT-FROM-10
+Found 0, trying 1073741824 - 1342177279, speed 348617475 seeds per second
+seed = 1234567890
+Found 1, trying 1342177280 - 1610612735, speed 356015193 seeds per second
+seed = 1414163717
+Found 2, trying 1879048192 - 2147483647, speed 365573578 seeds per second
+seed = 1893625793
+Found 3, trying 2684354560 - 2952790015, speed 372309925 seeds per second
+seed = 2804485451
+Found 4, trying 3758096384 - 4026531839, speed 377318914 seeds per second
+seed = 3810276440
+Found 5, trying 4026531840 - 4294967295, speed 378078107 seeds per second
+Found 5
+real  0m 11.40s
+user  44m 38.16s
+sys   0m 1.67s
+</pre>
+<p>
+All of the above benchmarks are on CPUs running at stock clocks, with
+turbo boost and HT enabled (where applicable). Compiler versions vary
+(gcc 4.6.x to pre-4.9.0 snapshots; icc 14.0.0), and so do Linux
+distributions and kernel versions (which affects how threads are
+scheduled across the logical CPUs). And yes, all of these are on Linux,
+although php_mt_seed is meant to work on other systems as well.
+
+</p><p>
+
+<a href="http://www.openwall.com/Owl/" title="Powered by Openwall GNU/*/Linux - security-enhanced &quot;Linux distribution&quot;"><img src="php_mt_seed%20%20README_files/Owl-80x15-4.png" alt="Powered by Openwall GNU/*/Linux" border="0" height="15" width="80"></a>
+<a href="http://openvz.org/" title="Powered by OpenVZ - OS virtualization solution for Linux"><img src="php_mt_seed%20%20README_files/OpenVZ-80x15-cd.png" alt="Powered by OpenVZ" border="0" height="15" width="80"></a>
+<a rel="nofollow" class="addthis_button" href="http://addthis.com/bookmark.php?v=250&amp;username=openwall"><img src="php_mt_seed%20%20README_files/lg-share-en.gif" alt="Bookmark and Share" border="0" height="16" width="125"></a>
+
+<script type="text/javascript">
+var addthis_config =
+{ data_use_flash: false, data_use_cookies: false, data_track_clickback: true }
+</script>
+<script type="text/javascript" src="php_mt_seed%20%20README_files/addthis_widget.js"></script><div id="_atssh" style="visibility: hidden; height: 1px; width: 1px; position: absolute; z-index: 100000;"><iframe src="php_mt_seed%20%20README_files/sh173.htm" style="height: 1px; width: 1px; position: absolute; z-index: 100000; border: 0px none; left: 0px; top: 0px;" title="AddThis utility frame" id="_atssh555"></iframe></div><script src="php_mt_seed%20%20README_files/core156.js" type="text/javascript"></script>
+
+
+
+
+
+</p></body></html>

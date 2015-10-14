@@ -1,0 +1,12 @@
+im.crop(trai,tren,phai,duoi) -- cat anh
+matr = [[1 for x in range(n)] for x in range(n)] -- list 2 chieu
+[::-1] --- doc tu cuoi ve dau
+bin(int(hextring,16))==> hex string to bin
+hex(int(binstring,16))==> bin to hex
+commands.getoutput('python ./sqrd.py '+filename)
+
+synclient TouchpadOff=1     
+
+openssl rsa -inform PEM -pubin -text -modulus < id_rsa.pub
+
+openssl rsa -in newkey.pem -text -noout

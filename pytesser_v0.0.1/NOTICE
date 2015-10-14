@@ -1,0 +1,9 @@
+PyTesser 
+http://code.google.com/p/pytesser/
+
+This package contains the Tesseract Open Source OCR Engine.
+http://code.google.com/p/tesseract-ocr/
+Orignally developed at Hewlett Packard Laboratories Bristol and
+at Hewlett Packard Co, Greeley Colorado, all the code
+in this distribution is now licensed under the Apache License:
+

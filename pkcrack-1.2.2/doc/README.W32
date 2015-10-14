@@ -1,0 +1,21 @@
+Hi,
+
+this archive contains 32bit-Windows executables of the PkCrack tool 
+implementing a known-plaintext-attack on the PkZip encryption devised 
+by Eli Biham and Paul Kocher. The programs were compiled using 
+DJGPP on a Windoze 2000 machine. I suppose it also works on Windoze 9x, NT
+and XP.
+
+Please refer to the file README for information on how to use the programs.
+
+The sources for this package are available on the World Wide Web at
+
+http://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html
+
+If you want to compile them yourself you can download DJGPP at
+
+http://www.delorie.com/djgpp/
+
+Good luck,
+
+		Peter

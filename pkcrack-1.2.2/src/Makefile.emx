@@ -1,0 +1,62 @@
+CC=gcc
+CFLAGS=-O6 -Wall
+
+SRCS =	crc.c mktmptbl.c main.c stage1.c keystuff.c stage2.c stage3.c exfunc.c\
+	readhead.c writehead.c zipdecrypt.c debug.c
+
+OBJS =	crc.o mktmptbl.o main.o stage1.o keystuff.o stage2.o stage3.o exfunc.o\
+	readhead.o writehead.o zipdecrypt.o debug.o
+
+all: pkcrack.exe zipdecrypt.exe findkey.exe extract.exe makekey.exe
+
+pkcrack.exe: $(OBJS)
+	$(CC) -s -o pkcrack.exe $(CFLAGS) $(OBJS)
+
+decrypt.exe: decrypt.o keystuff.o crc.o
+	$(CC) -s -o decrypt.exe $(CFLAGS) decrypt.o keystuff.o crc.o
+
+findkey.exe: findkey.o crc.o stage3.o keystuff.o
+	$(CC) -s -o findkey.exe $(CFLAGS) findkey.o crc.o stage3.o keystuff.o
+
+zipdecrypt.exe: zdmain.o zipdecrypt.o crc.o keystuff.o writehead.o readhead.o
+	$(CC) -s -o zipdecrypt.exe $(CFLAGS) zdmain.o zipdecrypt.o crc.o keystuff.o writehead.o readhead.o
+
+extract.exe: extract.o exfunc.o readhead.o
+	$(CC) -s -o extract.exe $(CFLAGS) extract.o exfunc.o readhead.o
+
+makekey.exe: makekey.o crc.o keystuff.o
+	$(CC) -s -o makekey.exe $(CFLAGS) makekey.o crc.o keystuff.o
+
+clean:
+	rm -f pkcrack *.o core findkey decrypt zipdecrypt extract makekey
+
+crc.c: crc.h
+
+makekey.c: pkcrack.h keystuff.h crc.h
+
+findkey.c: pkcrack.h stage3.h crc.h
+
+keystuff.c: pkcrack.h crc.h keystuff.h
+
+main.c: crc.h mktmptbl.h pkcrack.h stage1.h stage2.h stage3.h headers.h
+
+stage1.c: crc.h mktmptbl.h pkcrack.h
+
+stage2.c: crc.h keystuff.h mktmptbl.h pkcrack.h
+
+stage3.c: crc.h keystuff.h pkcrack.h
+
+zipdecrypt.c: crc.h keystuff.h pkcrack.h headers.h
+
+zdmain.c: crc.h pkcrack.h
+
+extract.c: headers.h
+
+exfunc.c: headers.h
+
+readhead.c: headers.h
+
+writehead.c: headers.h
+
+mktmptbl.c: mktmptbl.h pkctypes.h
+

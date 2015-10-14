@@ -1,0 +1,55 @@
+#! /usr/bin/env python
+
+from binascii import a2b_hex
+
+def score(string):
+  freq = dict()
+  freq['A']=834
+  freq['B']=154
+  freq['C']=273
+  freq['D']=414
+  freq['E']=1260
+  freq['F']=203
+  freq['G']=192
+  freq['H']=611
+  freq['I']=671
+  freq['J']=23
+  freq['K']=87
+  freq['L']=424
+  freq['M']=253
+  freq['N']=680
+  freq['O']=770
+  freq['P']=166
+  freq['Q']=9
+  freq['R']=568
+  freq['S']=611
+  freq['T']=937
+  freq['U']=285
+  freq['V']=106
+  freq['W']=234
+  freq['X']=20
+  freq['Y']=204
+  freq['Z']=6
+
+  ret = 0
+  for c in string.upper():
+    if c in freq:
+      ret += freq[c]
+
+  return ret
+
+def decoder(string):
+  cur_best = 0
+  l = len(string)
+  a = int(string,16)
+  for i in range(256):
+    b = int(("%02x" % i) * l,16)
+    c = "%X" % (a^b)
+    if len(c) % 2 == 1:
+      c = "0%s" % c
+    c = a2b_hex(c)
+    if score(c) > 0:
+      print "[%c] %s" % (i, c)
+      cur_best = score(c)
+
+decoder(raw_input())

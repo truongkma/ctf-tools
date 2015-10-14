@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Challenge 50 extra credit</title>
+<script src="https://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+</head>
+
+<script>
+function strToBytes(s) {
+  var bytes = [];
+  for (var i = 0; i < s.length; ++i) {
+    bytes[i] = s.charCodeAt(i);
+  }
+  return bytes;
+}
+
+function bytesToWords(bytes) {
+  var words = [];
+  for (var i = 0; i < (((bytes.length + 3) / 4) >> 0); ++i) {
+    a0 = bytes[4*i];
+    a1 = bytes[4*i+1] || 0;
+    a2 = bytes[4*i+2] || 0;
+    a3 = bytes[4*i+3] || 0;
+    words[i] = (a0 << 24) | (a1 << 16) | (a2 << 8) | a3;
+  }
+  return words;
+}
+
+function wordsToBytes(words) {
+  var bytes = [];
+  for (var i = 0; i < words.length; i++) {
+    var w = words[i];
+    bytes.push(w >>> 24);
+    bytes.push((w >>> 16) & 0xff);
+    bytes.push((w >>> 8) & 0xff);
+    bytes.push(w & 0xff);
+  }
+  return bytes;
+}
+
+function strToWords(s) {
+  return bytesToWords(strToBytes(s));
+}
+
+function padPKCS7(bytes, k) {
+  var ch = k - (bytes.length % k);
+  var paddedBytes = bytes.slice(0);
+  for (var i = 0; i < ch; ++i) {
+    paddedBytes[paddedBytes.length] = ch;
+  }
+  return paddedBytes;
+}
+
+function bytesEqual(b1, b2) {
+  if (b1.length != b2.length) {
+    return false;
+  }
+  for (var i = 0; i < b1.length; ++i) {
+    if (b1[i] != b2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function unhexlify(s) {
+  if (s.length % 2 != 0) {
+    throw new Error('s must have even length')
+  }
+  var bytes = [];
+  for (var i = 0; i < ((s.length / 2) >> 0); i++) {
+    bytes[i] = parseInt(s[2*i] + s[2*i+1], 16);
+  }
+  return bytes;
+}
+
+function insecureHash(s) {
+  var aes = new sjcl.cipher.aes(strToWords('YELLOW SUBMARINE'));
+  var words = bytesToWords(padPKCS7(strToBytes(s), 16));
+
+  var a = [0,0,0,0];
+  for (var i = 0; i < ((words.length / 4) >> 0); i++) {
+      a[0] ^= words[4*i];
+      a[1] ^= words[4*i+1];
+      a[2] ^= words[4*i+2];
+      a[3] ^= words[4*i+3];
+      a = aes.encrypt(a);
+  }
+  a[0] >>>= 0;
+  a[1] >>>= 0;
+  a[2] >>>= 0;
+  a[3] >>>= 0;
+  return wordsToBytes(a);
+}
+
+var expectedHash = unhexlify('296b8d7cb78a243dda4d0a61d33bbdd1');
+
+function processContent() {
+  contentTextarea = document.getElementById('contentTextarea');
+  content = contentTextarea.value;
+  if (bytesEqual(insecureHash(content), expectedHash)) {
+    eval(content);
+  }
+}
+</script>
+
+<body>
+<textarea id="contentTextarea" rows="50", cols="80">alert('MZA who was that?');
+</textarea>
+<br>
+<button onclick="processContent()" type="button">Insert content</button>
+</body>
