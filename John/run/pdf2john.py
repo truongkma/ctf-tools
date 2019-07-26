@@ -111,10 +111,10 @@ class PdfParser:
         output += p.decode('ascii')+'*'+meta+'*'
         output += str(int(len(i_d)/2))+'*'+i_d.decode('ascii')+'*'+passwords
         if(self.is_meta_data_encrypted(encryption_dictionary)):
-            sys.stdout.write("%s:%s:::::%s\n" % (os.path.basename(self.file_name.encode('UTF-8')), output.encode('UTF-8'), self.file_name.encode('UTF-8')))
+            sys.stdout.write("%s:%s:::::%s\n" % (str(os.path.basename(self.file_name, "utf-8")), str(output,"utf-8"), str(self.file_name,"utf-8")))
         else:
             gecos = self.parse_meta_data(trailer)
-            sys.stdout.write("%s:%s:::%s::%s\n" % (os.path.basename(self.file_name.encode('UTF-8')), output.encode('UTF-8'), gecos.encode('UTF-8'), self.file_name.encode('UTF-8')))
+            sys.stdout.write("%s:%s:::%s::%s\n" % (str(os.path.basename(self.file_name, "utf-8")), str(output, "utf-8"), str(gecos, "utf-8"), str(self.file_name, "utf-8")))
 
     def get_passwords_for_JtR(self, encryption_dictionary):
         output = ""
