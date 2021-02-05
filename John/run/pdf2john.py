@@ -220,6 +220,8 @@ class PdfParser:
         return object_id
 
     def get_pdf_object(self, object_id):
+        if isinstance(object_id, str):
+            object_id = object_id.encode()
         output = object_id+b" obj" + \
             self.encrypted.partition(b"\r"+object_id+b" obj")[2]
         if(output == object_id+b" obj"):
